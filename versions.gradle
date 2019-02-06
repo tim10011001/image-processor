@@ -1,0 +1,47 @@
+ext.deps = [:]
+
+def versions = [:]
+versions.dagger2 = '2.15'
+versions.supportlib = '26.1.0'
+versions.constraintlayout = '1.1.3'
+versions.junit = '4.12'
+versions.androidTestRunner = '1.0.2'
+versions.espresso = '3.0.2'
+versions.retrofit = '2.5.0'
+versions.gson = '2.8.2'
+versions.gsonConverter = '2.5.0'
+versions.okhttp_logging_inerceptor = '3.6.0'
+versions.permissions = '2.2.2'
+versions.picasso = '2.71828'
+
+def dagger2 = [:]
+dagger2.runtime = "com.google.dagger:dagger-android:$versions.dagger2"
+dagger2.support = "com.google.dagger:dagger-android-support:$versions.dagger2"
+dagger2.processor = "com.google.dagger:dagger-android-processor:$versions.dagger2"
+dagger2.compiler = "com.google.dagger:dagger-compiler:$versions.dagger2"
+
+def ui = [:]
+ui.appcompat = "com.android.support:appcompat-v7:$versions.supportlib"
+ui.constraintLayout = "com.android.support.constraint:constraint-layout:$versions.constraintlayout"
+ui.design = "com.android.support:design:$versions.supportlib"
+ui.cardview = "com.android.support:cardview-v7:$versions.supportlib"
+
+def tests = [:]
+tests.junit = "junit:junit:$versions.junit"
+tests.androidTestRunner = "com.android.support.test:runner:$versions.androidTestRunner"
+tests.espresso = "com.android.support.test.espresso:espresso-core:$versions.espresso"
+
+def network = [:]
+network.retrofit = "com.squareup.retrofit2:retrofit:$versions.retrofit"
+network.gson = "com.google.code.gson:gson:$versions.gson"
+network.gsonConverter = "com.squareup.retrofit2:converter-gson:$versions.gsonConverter"
+network.okhttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp_logging_inerceptor"
+network.picasso = "com.squareup.picasso:picasso:$versions.picasso"
+def tedPermission = [:]
+tedPermission.permission = "gun0912.ted:tedpermission:$versions.permissions"
+
+deps.dagger = dagger2
+deps.ui = ui
+deps.tests = tests
+deps.network = network
+deps.permissions = tedPermission

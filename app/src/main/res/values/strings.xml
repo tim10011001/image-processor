@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">ImageProcessor</string>
+    <string name="rotate_string">Rotate</string>
+    <string name="invert_colors_string">Invert colors</string>
+    <string name="mirror_image_string">Mirror image</string>
+    <string name="load_image_string">Load Image</string>
+    <string name="delete_or_use">Delete or use as source?</string>
+    <string name="delete">Delete</string>
+    <string name="use_as_source">Use as source</string>
+    <string name="which_images_source_to_use">Which image source use?</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="cancel">Cancel</string>
+    <string name="need_storage_permission">Need storage permission for getting images</string>
+    <string name="camera_activation_message">Camera permission is denied, but you can turn it on in settings</string>
+    <string name="download">Download</string>
+    <string name="link">Link</string>
+    <string name="loading_error">Loading error</string>
+</resources>

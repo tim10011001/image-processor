@@ -1,0 +1,3 @@
+package com.tim10011001.imageprocessor.di.utils
+
+interface DependenciesConsumer
