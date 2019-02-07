@@ -3,9 +3,11 @@ package com.tim10011001.imageprocessor.data.repositories.bitmaps
 import android.graphics.*
 import android.media.ExifInterface
 import android.media.ExifInterface.*
+import android.util.Log
 import com.tim10011001.imageprocessor.core.threading.ThreadHelper
 import java.io.File
 import javax.inject.Inject
+import kotlin.random.Random
 
 class BitmapHelperImpl @Inject constructor() : BitmapHelper {
     override fun fileToThumbnail(file: File?): Bitmap {
@@ -84,6 +86,7 @@ class BitmapHelperImpl @Inject constructor() : BitmapHelper {
 
     override fun rotateImage(original: File?, callback: (Bitmap?) -> Unit) {
         ThreadHelper.getInstance()?.execute {
+            sleepAndLogTime()
             val source = fileToBitmap(original)
             val matrix = Matrix()
             matrix.postRotate(90f)
@@ -93,8 +96,13 @@ class BitmapHelperImpl @Inject constructor() : BitmapHelper {
         }
     }
 
+    private fun createRandomTime(): Long {
+        return Random.nextLong(30000)
+    }
+
     override fun invertImageColors(original: File?, callback: (Bitmap?) -> Unit) {
         ThreadHelper.getInstance()?.execute {
+            sleepAndLogTime()
             val source = fileToBitmap(original)
             val monoSource = Bitmap.createBitmap(source.width, source.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(monoSource)
@@ -110,6 +118,7 @@ class BitmapHelperImpl @Inject constructor() : BitmapHelper {
 
     override fun mirrorImage(original: File?, callback: (Bitmap?) -> Unit) {
         ThreadHelper.getInstance()?.execute {
+            sleepAndLogTime()
             val source = fileToBitmap(original)
             val matrix = Matrix()
             matrix.setScale(-1f, 1f)
@@ -117,6 +126,12 @@ class BitmapHelperImpl @Inject constructor() : BitmapHelper {
             source.recycle()
             callback(reflected)
         }
+    }
+
+    private fun sleepAndLogTime() {
+        val randomTime = createRandomTime()
+        Log.e(this::class.simpleName, "Random time -> $randomTime")
+        Thread.sleep(randomTime)
     }
 
     companion object {

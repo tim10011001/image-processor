@@ -122,7 +122,7 @@ class FilesRepositoryImpl @Inject constructor(): FilesRepository {
     }
 
     private fun createBitmapName(): String {
-        return "${System.currentTimeMillis()}.png"
+        return "${System.currentTimeMillis()}.jpeg"
     }
 
     private fun createOrGetCacheDir(): File {

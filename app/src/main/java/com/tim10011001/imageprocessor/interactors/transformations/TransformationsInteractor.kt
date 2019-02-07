@@ -34,12 +34,14 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
     }
 
     fun rotateImageAndCache(source: TransformationModel?, result: TransformationModel) {
-        filesRepository.loadImage(source?.cachedPath!!) { image ->
-            bitmapHelper.rotateImage(image) { rotated ->
-                filesRepository.cacheBitmap(rotated) { path ->
-                    filesRepository.loadImage(path) { file ->
-                        result.image = bitmapHelper.fileToThumbnail(file)
-                        result.cachedPath = path
+        if(source?.cachedPath != null) {
+            filesRepository.loadImage(source.cachedPath!!) { image ->
+                bitmapHelper.rotateImage(image) { rotated ->
+                    filesRepository.cacheBitmap(rotated) { path ->
+                        filesRepository.loadImage(path) { file ->
+                            result.image = bitmapHelper.fileToThumbnail(file)
+                            result.cachedPath = path
+                        }
                     }
                 }
             }
@@ -48,12 +50,14 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
 
 
     fun invertImageColorsAndCache(source: TransformationModel?, result: TransformationModel) {
-        filesRepository.loadImage(source?.cachedPath!!) { image ->
-            bitmapHelper.invertImageColors(image) { inverted ->
-                filesRepository.cacheBitmap(inverted) { path ->
-                    filesRepository.loadImage(path) { file ->
-                        result.image = bitmapHelper.fileToThumbnail(file)
-                        result.cachedPath = path
+        if(source?.cachedPath != null) {
+            filesRepository.loadImage(source.cachedPath!!) { image ->
+                bitmapHelper.invertImageColors(image) { inverted ->
+                    filesRepository.cacheBitmap(inverted) { path ->
+                        filesRepository.loadImage(path) { file ->
+                            result.image = bitmapHelper.fileToThumbnail(file)
+                            result.cachedPath = path
+                        }
                     }
                 }
             }
@@ -61,12 +65,14 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
     }
 
     fun reflectImageAndCache(source: TransformationModel?, result: TransformationModel) {
-        filesRepository.loadImage(source?.cachedPath!!) { image ->
-            bitmapHelper.mirrorImage(image) { reflected ->
-                filesRepository.cacheBitmap(reflected) { path ->
-                    filesRepository.loadImage(path) { file ->
-                        result.image = bitmapHelper.fileToThumbnail(file)
-                        result.cachedPath = path
+        if(source?.cachedPath != null) {
+            filesRepository.loadImage(source.cachedPath!!) { image ->
+                bitmapHelper.mirrorImage(image) { reflected ->
+                    filesRepository.cacheBitmap(reflected) { path ->
+                        filesRepository.loadImage(path) { file ->
+                            result.image = bitmapHelper.fileToThumbnail(file)
+                            result.cachedPath = path
+                        }
                     }
                 }
             }

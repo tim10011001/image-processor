@@ -43,39 +43,45 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
     }
 
     override fun rotateImage() {
-        val rotated = TransformationModel()
-        calculateColor(rotated)
-        rotated.onModelChange = {
-            view()?.updateTransformationsView(transformationsResults)
-        }
+        if(currentTransformationModel != null) {
+            val rotated = TransformationModel()
+            calculateColor(rotated)
+            rotated.onModelChange = {
+                view()?.updateTransformationsView(transformationsResults)
+            }
 
-        transformationsResults.add(0, rotated)
-        view()?.updateTransformationsView(transformationsResults)
-        interactor.rotateImageAndCache(currentTransformationModel, rotated)
+            transformationsResults.add(0, rotated)
+            view()?.updateTransformationsView(transformationsResults)
+            interactor.rotateImageAndCache(currentTransformationModel, rotated)
+        }
     }
 
     override fun invertColors() {
-        val inverted = TransformationModel()
-        calculateColor(inverted)
-        inverted.onModelChange = {
-            view()?.updateTransformationsView(transformationsResults)
-        }
+        if(currentTransformationModel != null) {
+            val inverted = TransformationModel()
+            calculateColor(inverted)
+            inverted.onModelChange = {
+                view()?.updateTransformationsView(transformationsResults)
+            }
 
-        transformationsResults.add(0, inverted)
-        view()?.updateTransformationsView(transformationsResults)
-        interactor.invertImageColorsAndCache(currentTransformationModel, inverted)
+            transformationsResults.add(0, inverted)
+            view()?.updateTransformationsView(transformationsResults)
+            interactor.invertImageColorsAndCache(currentTransformationModel, inverted)
+        }
     }
 
     override fun reflectImage() {
-        val reflected = TransformationModel()
-        calculateColor(reflected)
-        reflected.onModelChange = {
-            view()?.updateTransformationsView(transformationsResults)
-        }
+        if(currentTransformationModel != null) {
+            val reflected = TransformationModel()
+            calculateColor(reflected)
+            reflected.onModelChange = {
+                view()?.updateTransformationsView(transformationsResults)
+            }
 
-        transformationsResults.add(0, reflected)
-        view()?.updateTransformationsView(transformationsResults)
-        interactor.reflectImageAndCache(currentTransformationModel, reflected)
+            transformationsResults.add(0, reflected)
+            view()?.updateTransformationsView(transformationsResults)
+            interactor.reflectImageAndCache(currentTransformationModel, reflected)
+        }
     }
 
 
@@ -122,7 +128,7 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
     }
 
     override fun removeModel(model: TransformationModel?) {
-        if(currentTransformationModel == model) {
+        if(currentTransformationModel?.cachedPath == model?.cachedPath) {
             currentTransformationModel = null
             currentImageSource = null
             view()?.showLoadSourceBtn()
@@ -158,9 +164,8 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
 
     override fun handleCapturedData(image: Bitmap) {
         interactor.saveCapturedData(image) {
-            currentTransformationModel = it
-            currentImageSource = it.image
-            view()?.showImage(currentImageSource)
+            interactor.changeSource(it)
+            loadSourceImage()
         }
     }
 
