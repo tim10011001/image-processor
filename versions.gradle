@@ -13,6 +13,7 @@ versions.gsonConverter = '2.5.0'
 versions.okhttp_logging_inerceptor = '3.6.0'
 versions.permissions = '2.2.2'
 versions.picasso = '2.71828'
+versions.exifInformation = '25.1.0'
 
 def dagger2 = [:]
 dagger2.runtime = "com.google.dagger:dagger-android:$versions.dagger2"
@@ -40,8 +41,12 @@ network.picasso = "com.squareup.picasso:picasso:$versions.picasso"
 def tedPermission = [:]
 tedPermission.permission = "gun0912.ted:tedpermission:$versions.permissions"
 
+def exifInformation = [:]
+exifInformation.exif = "com.android.support:exifinterface:$versions.exifInformation"
+
 deps.dagger = dagger2
 deps.ui = ui
 deps.tests = tests
 deps.network = network
 deps.permissions = tedPermission
+deps.exifInformation = exifInformation

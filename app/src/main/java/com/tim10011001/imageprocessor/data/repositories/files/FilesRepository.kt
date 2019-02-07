@@ -10,5 +10,7 @@ interface FilesRepository {
     fun cacheBitmap(bitmap: Bitmap?, callback: (String) -> Unit)
     fun loadSavedImages(callback: (List<File>) -> Unit)
     fun removeFromStorage(cachedPath: String?)
-
+    fun isImageExist(path: String?): Boolean
+    fun changeExifInfo(path: String)
+    fun loadExifInfo(cachedPath: String?): String?
 }

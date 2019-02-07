@@ -39,6 +39,8 @@ dependencies {
     implementation deps.network.okhttpLoggingInterceptor
     implementation deps.network.picasso
 
+    implementation deps.exifInformation.exif
+
     implementation deps.permissions.permission
 
     testImplementation deps.tests.junit

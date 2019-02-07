@@ -2,14 +2,19 @@ package com.tim10011001.imageprocessor.presentation.ui.fragments.transformations
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.support.design.widget.TextInputEditText
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.tim10011001.imageprocessor.R
 import com.tim10011001.imageprocessor.data.models.transformations.TransformationModel
@@ -20,6 +25,8 @@ import com.tim10011001.imageprocessor.presentation.ui.HostActivityContract
 import com.tim10011001.imageprocessor.presentation.ui.fragments.transformations.adapter.TransformationsAdapter
 import kotlinx.android.synthetic.main.image_layout.*
 import kotlinx.android.synthetic.main.transformations_fragment.*
+import kotlinx.android.synthetic.main.transformations_holder.*
+import org.w3c.dom.Text
 import javax.inject.Inject
 
 class TransformationsFragment: BaseFragment(), TransformationsContract.View, DependenciesConsumer{
@@ -59,8 +66,18 @@ class TransformationsFragment: BaseFragment(), TransformationsContract.View, Dep
             presenter.reflectImage()
         }
 
+        exifInformationBtn?.setOnClickListener {
+            presenter.loadExifInformation()
+        }
+
+    }
+
+
+    override fun onResume() {
+        super.onResume()
         presenter.attachView(this)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -88,6 +105,14 @@ class TransformationsFragment: BaseFragment(), TransformationsContract.View, Dep
             loadingStatus?.visibility = View.GONE
             loadImageBtn.visibility = View.GONE
             transformationView?.visibility = View.VISIBLE
+        }
+    }
+
+    override fun showLoadSourceBtn() {
+        uiHandler.post {
+            loadingStatus?.visibility = View.GONE
+            transformationView?.visibility = View.GONE
+            loadImageBtn?.visibility = View.VISIBLE
         }
     }
 
@@ -158,6 +183,28 @@ class TransformationsFragment: BaseFragment(), TransformationsContract.View, Dep
 
     override fun showDownloadError() {
         Toast.makeText(context, R.string.loading_error, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if(newConfig?.orientation == ORIENTATION_LANDSCAPE) {
+            transformationsResultRecycler?.layoutManager = GridLayoutManager(context, 2)
+        } else {
+            transformationsResultRecycler?.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    override fun showExifInfo(cameraOwner: String?) {
+        val view = LayoutInflater.from(context).inflate(R.layout.exif_dialog, null)
+        val exifInfoView = view.findViewById<TextView>(R.id.cameraOwnerText)
+        val exifDialog = AlertDialog.Builder(context)
+                .setView(view)
+                .setNegativeButton(R.string.close) { dialog, _ ->
+                    dialog.dismiss()
+                }.create()
+
+        exifDialog.show()
+        exifInfoView.text = cameraOwner ?: context.getString(R.string.no_camera_owner_exist)
     }
 
     override fun fragmentKey(): String = this::class.simpleName!!

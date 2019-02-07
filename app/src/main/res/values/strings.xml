@@ -16,4 +16,8 @@
     <string name="download">Download</string>
     <string name="link">Link</string>
     <string name="loading_error">Loading error</string>
+    <string name="exif_information">Exif information</string>
+    <string name="camera_owner">Camera owner</string>
+    <string name="close">Close</string>
+    <string name="no_camera_owner_exist">No camera owner exist</string>
 </resources>

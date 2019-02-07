@@ -1,5 +1,6 @@
 package com.tim10011001.imageprocessor.presentation.ui
 
+import android.os.Bundle
 import com.tim10011001.imageprocessor.presentation.BaseContract
 
 interface HostActivityContract {
@@ -14,6 +15,7 @@ interface HostActivityContract {
     }
 
     interface Presenter: BaseContract.Presenter<View> {
+        fun attachView(view: View, savedInstanceState: Bundle)
         fun requestStoragePermissions()
         fun requestCameraPermission()
         fun handleCameraResult()

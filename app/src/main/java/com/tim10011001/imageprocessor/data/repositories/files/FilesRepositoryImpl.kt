@@ -1,11 +1,13 @@
 package com.tim10011001.imageprocessor.data.repositories.files
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Environment
+import android.support.media.ExifInterface
 import android.util.Log
+import com.tim10011001.imageprocessor.BuildConfig
 import com.tim10011001.imageprocessor.core.threading.ThreadHelper
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.Exception
@@ -109,7 +111,7 @@ class FilesRepositoryImpl @Inject constructor(): FilesRepository {
         val outputStream = FileOutputStream(bitmapFile)
         ThreadHelper.getInstance()?.execute {
             try {
-                bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 outputStream.flush()
             }catch (e: IOException) {
             } finally {
@@ -146,6 +148,31 @@ class FilesRepositoryImpl @Inject constructor(): FilesRepository {
         if(image.exists()) {
             image.delete()
         }
+    }
+
+    override fun isImageExist(path: String?): Boolean {
+        if(path == null) return false
+        val image = File(path)
+
+        return image.exists()
+    }
+
+    override fun changeExifInfo(path: String) {
+        val exifInterface = ExifInterface(path)
+        exifInterface.setAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME, BuildConfig.APPLICATION_ID)
+        exifInterface.saveAttributes()
+
+        Log.e(this::class.simpleName, "Exif info -> ${exifInterface.getAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME)}")
+    }
+
+    override fun loadExifInfo(cachedPath: String?): String? {
+        if(cachedPath == null) {
+            return null
+        }
+
+        val inputStream = FileInputStream(cachedPath)
+        val exifInterface = ExifInterface(inputStream)
+        return exifInterface.getAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME)
     }
 
     companion object {

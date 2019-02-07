@@ -13,14 +13,19 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
                                                     private val preferenceRepository: PreferenceRepository,
                                                     private val bitmapHelper: BitmapHelper) {
 
-    fun loadSourceImage(callback: (TransformationModel?) -> Unit) {
+    fun loadSourceImageFromStorage(callback: (TransformationModel?) -> Unit) {
         val path = preferenceRepository.loadPickedImage()
+        if(!filesRepository.isImageExist(path)) {
+            preferenceRepository.savePickedImage(null)
+            callback(null)
+            return
+        }
+
         path?.apply {
             filesRepository.loadImage(this) { file ->
                 ThreadHelper.getInstance()?.execute {
                     val model = TransformationModel()
                     model.cachedPath = file?.absolutePath
-                    model.progress = 100
                     model.image = bitmapHelper.fileToThumbnail(file)
                     callback(model)
                 }
@@ -35,7 +40,6 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
                     filesRepository.loadImage(path) { file ->
                         result.image = bitmapHelper.fileToThumbnail(file)
                         result.cachedPath = path
-                        result.progress = 100
                     }
                 }
             }
@@ -50,7 +54,6 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
                     filesRepository.loadImage(path) { file ->
                         result.image = bitmapHelper.fileToThumbnail(file)
                         result.cachedPath = path
-                        result.progress = 100
                     }
                 }
             }
@@ -64,7 +67,6 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
                     filesRepository.loadImage(path) { file ->
                         result.image = bitmapHelper.fileToThumbnail(file)
                         result.cachedPath = path
-                        result.progress = 100
                     }
                 }
             }
@@ -81,7 +83,6 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
                     val model = TransformationModel()
                     model.cachedPath = file.absolutePath
                     model.image = bitmap
-                    model.progress = 100
                     model.backgroundColor = if (sorted.indexOf(file) % 2 == 0) {
                         R.color.colorPrimaryDark
                     } else {
@@ -105,16 +106,20 @@ class TransformationsInteractor @Inject constructor(private val filesRepository:
 
     fun saveCapturedData(image: Bitmap?, callback: (TransformationModel) -> Unit) {
         filesRepository.cacheBitmap(image) { path ->
+            filesRepository.changeExifInfo(path)
             preferenceRepository.savePickedImage(path)
             filesRepository.loadImage(path) { file ->
                 ThreadHelper.getInstance()?.execute {
                     val model = TransformationModel()
                     model.cachedPath = file?.absolutePath
-                    model.progress = 100
                     model.image = bitmapHelper.fileToThumbnail(file)
                     callback(model)
                 }
             }
         }
+    }
+
+    fun loadExifInfo(model: TransformationModel?): String? {
+        return filesRepository.loadExifInfo(model?.cachedPath)
     }
 }

@@ -13,13 +13,6 @@ class TransformationHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
     private val transformationImage = itemView?.findViewById<ImageView>(R.id.transformationResult)
     private val rootView = itemView?.findViewById<View>(R.id.transformationRoot)
 
-//    fun showProgress(progress: Int?) {
-//        transformationProgress?.progress = progress!!
-//        if(progress == transformationProgress?.max) {
-//            transformationProgress.visibility = View.GONE
-//        }
-//    }
-
     fun showTransformationView(image: Bitmap?) {
         if(image == null) {
             transformationProgress?.visibility = View.VISIBLE
@@ -37,4 +30,6 @@ class TransformationHolder(itemView: View?) : RecyclerView.ViewHolder(itemView) 
     fun handleBackground(color: Int) {
         rootView?.setBackgroundColor(ContextCompat.getColor(itemView?.context, color))
     }
+
+
 }

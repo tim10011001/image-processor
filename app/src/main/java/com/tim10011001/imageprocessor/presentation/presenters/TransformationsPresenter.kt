@@ -2,7 +2,6 @@ package com.tim10011001.imageprocessor.presentation.presenters
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import com.tim10011001.imageprocessor.R
@@ -98,16 +97,24 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
     }
 
     override fun loadSourceImage() {
-        interactor.loadSourceImage {
+        view()?.showProgress()
+        interactor.loadSourceImageFromStorage {
+            if(it == null) {
+                view()?.hideProgress()
+                view()?.showLoadSourceBtn()
+                return@loadSourceImageFromStorage
+            }
+
             currentTransformationModel = it
             currentImageSource = currentTransformationModel?.image
+            view()?.hideProgress()
             view()?.showImage(currentImageSource)
         }
     }
 
 
     private fun loadCustomImages() {
-        interactor.loadCustomImages{
+        interactor.loadCustomImages {
             transformationsResults.clear()
             transformationsResults.addAll(it)
             view()?.updateTransformationsView(transformationsResults)
@@ -115,6 +122,12 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
     }
 
     override fun removeModel(model: TransformationModel?) {
+        if(currentTransformationModel == model) {
+            currentTransformationModel = null
+            currentImageSource = null
+            view()?.showLoadSourceBtn()
+        }
+
         transformationsResults.remove(model)
         view()?.updateTransformationsView(transformationsResults)
         interactor.removeModel(model)
@@ -172,6 +185,11 @@ class TransformationsPresenter @Inject constructor(private val interactor: Trans
             }
 
         })
+    }
+
+    override fun loadExifInformation() {
+        val cameraOwner = interactor.loadExifInfo(currentTransformationModel)
+        view()?.showExifInfo(cameraOwner)
     }
 
     companion object {

@@ -15,6 +15,8 @@ interface TransformationsContract {
         fun openCameraForCapture()
         fun showDownloadDialog()
         fun showDownloadError()
+        fun showLoadSourceBtn()
+        fun showExifInfo(cameraOwner: String?)
     }
 
     interface Presenter: BaseContract.Presenter<TransformationsContract.View> {
@@ -30,5 +32,6 @@ interface TransformationsContract {
         fun handleLoadVariant(loadVariant: Int)
         fun handleCapturedData(image: Bitmap)
         fun downloadImage(url: String)
+        fun loadExifInformation()
     }
 }

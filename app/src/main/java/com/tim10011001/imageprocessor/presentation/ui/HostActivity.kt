@@ -30,7 +30,12 @@ class HostActivity: AppCompatActivity(), HasSupportFragmentInjector, HostActivit
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_holder)
-        presenter.attachView(this)
+
+        if(savedInstanceState != null) {
+            presenter.attachView(this, savedInstanceState)
+        } else {
+            presenter.attachView(this)
+        }
     }
 
     override fun onDestroy() {
@@ -51,7 +56,7 @@ class HostActivity: AppCompatActivity(), HasSupportFragmentInjector, HostActivit
     }
 
     override fun startCaptureAction() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {takePictureIntent ->
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(packageManager)?.also {
                 startActivityForResult(takePictureIntent, HostActivityPresenter.TAKE_PICTURE_REQUEST)
             }

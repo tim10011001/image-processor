@@ -1,5 +1,6 @@
 package com.tim10011001.imageprocessor.presentation.presenters
 
+import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.tim10011001.imageprocessor.presentation.ui.HostActivityContract
@@ -27,8 +28,18 @@ class HostActivityPresenter @Inject constructor(): HostActivityContract.Presente
 
     override fun attachView(view: HostActivityContract.View) {
         viewRef = WeakReference(view)
-        Log.e(this::class.simpleName, "Attached")
         requestStoragePermissions()
+    }
+
+    override fun attachView(view: HostActivityContract.View, savedInstanceState: Bundle) {
+        viewRef = WeakReference(view)
+        val configChangedOnGallery = savedInstanceState.getBoolean(CONFIGURATION_ON_GALLERY, false)
+
+        if(configChangedOnGallery) {
+            openGalleryScreen()
+        } else {
+            openTransformationsScreen()
+        }
     }
 
     override fun detachView() {
@@ -57,5 +68,6 @@ class HostActivityPresenter @Inject constructor(): HostActivityContract.Presente
 
     companion object {
         const val TAKE_PICTURE_REQUEST = 99
+        const val CONFIGURATION_ON_GALLERY = "CONFIGURATION_ON_GALLERY"
     }
 }

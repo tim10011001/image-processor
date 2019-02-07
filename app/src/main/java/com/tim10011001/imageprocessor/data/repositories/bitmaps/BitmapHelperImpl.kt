@@ -1,11 +1,13 @@
 package com.tim10011001.imageprocessor.data.repositories.bitmaps
 
 import android.graphics.*
+import android.media.ExifInterface
+import android.media.ExifInterface.*
 import com.tim10011001.imageprocessor.core.threading.ThreadHelper
 import java.io.File
 import javax.inject.Inject
 
-class BitmapHelperImpl @Inject constructor(): BitmapHelper {
+class BitmapHelperImpl @Inject constructor() : BitmapHelper {
     override fun fileToThumbnail(file: File?): Bitmap {
         return prepareBitmap(file, false)
     }
@@ -15,11 +17,11 @@ class BitmapHelperImpl @Inject constructor(): BitmapHelper {
     }
 
     private fun prepareBitmap(file: File?, originalSize: Boolean): Bitmap {
-        return BitmapFactory.Options().run {
+        val bitmap = BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeFile(file?.absolutePath, this)
 
-            inSampleSize = if(originalSize) {
+            inSampleSize = if (originalSize) {
                 1
             } else {
                 fetchSampleSize(this, REQ_WIDTH, REQ_HEIGHT)
@@ -28,6 +30,39 @@ class BitmapHelperImpl @Inject constructor(): BitmapHelper {
             inJustDecodeBounds = false
 
             BitmapFactory.decodeFile(file?.absolutePath, this)
+        }
+
+        val exifInterface = ExifInterface(file?.absolutePath)
+        val exifOrientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+        val exifRotation = fetchExifRotation(exifOrientation)
+        val exifTranslation = fetchExifTranslation(exifOrientation)
+
+        val matrix = Matrix()
+        if(exifRotation != 0) {
+            matrix.preRotate(exifRotation.toFloat())
+        }
+
+        if(exifTranslation != 1) {
+            matrix.preScale(exifTranslation.toFloat(), 1f)
+        }
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun fetchExifRotation(exifOrientation: Int): Int {
+        return when (exifOrientation) {
+            ORIENTATION_ROTATE_90, ORIENTATION_TRANSPOSE -> 90
+            ORIENTATION_ROTATE_180, ORIENTATION_FLIP_VERTICAL -> 180
+            ORIENTATION_ROTATE_270, ORIENTATION_TRANSVERSE -> 270
+            else -> 0
+        }
+    }
+
+    private fun fetchExifTranslation(exifOrientation: Int): Int {
+        return when(exifOrientation) {
+            ORIENTATION_FLIP_HORIZONTAL, ORIENTATION_FLIP_VERTICAL, ORIENTATION_TRANSPOSE, ORIENTATION_TRANSVERSE -> -1
+            else -> 1
         }
     }
 
@@ -78,13 +113,11 @@ class BitmapHelperImpl @Inject constructor(): BitmapHelper {
             val source = fileToBitmap(original)
             val matrix = Matrix()
             matrix.setScale(-1f, 1f)
-            val reflected = Bitmap.createBitmap(source, 0,0, source.width, source.height, matrix, true)
+            val reflected = Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
             source.recycle()
             callback(reflected)
         }
     }
-
-
 
     companion object {
         private const val REQ_WIDTH = 100
