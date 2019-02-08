@@ -158,11 +158,13 @@ class FilesRepositoryImpl @Inject constructor(): FilesRepository {
     }
 
     override fun changeExifInfo(path: String) {
-        val exifInterface = ExifInterface(path)
-        exifInterface.setAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME, BuildConfig.APPLICATION_ID)
-        exifInterface.saveAttributes()
-
-        Log.e(this::class.simpleName, "Exif info -> ${exifInterface.getAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME)}")
+        try {
+            val exifInterface = ExifInterface(path)
+            exifInterface.setAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME, BuildConfig.APPLICATION_ID)
+            exifInterface.saveAttributes()
+        } catch (e: IOException) {
+            Log.e(this::class.simpleName, e.message)
+        }
     }
 
     override fun loadExifInfo(cachedPath: String?): String? {
@@ -170,9 +172,15 @@ class FilesRepositoryImpl @Inject constructor(): FilesRepository {
             return null
         }
 
-        val inputStream = FileInputStream(cachedPath)
-        val exifInterface = ExifInterface(inputStream)
-        return exifInterface.getAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME)
+        var cameraOwner: String? = null
+        try {
+            val exifInterface = ExifInterface(cachedPath)
+            cameraOwner = exifInterface.getAttribute(ExifInterface.TAG_CAMARA_OWNER_NAME)
+        } catch (e: IOException) {
+            Log.e(this::class.simpleName, e.message)
+        }
+
+        return cameraOwner
     }
 
     companion object {

@@ -44,10 +44,10 @@ class HostActivity: AppCompatActivity(), HasSupportFragmentInjector, HostActivit
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
+        if(supportFragmentManager.backStackEntryCount == 1) {
+            finish()
         } else {
-            super.onBackPressed()
+            supportFragmentManager.popBackStack()
         }
     }
 
