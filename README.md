@@ -20,4 +20,4 @@
 
 ### APK - файл
 
-[](https://yadi.sk/d/tsHcZURR_dyomw)
+[https://yadi.sk/d/tsHcZURR_dyomw](https://yadi.sk/d/tsHcZURR_dyomw)
